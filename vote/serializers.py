@@ -5,7 +5,7 @@ from .models import Student, Representative, Vote
 class StudentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
-        fields = ['id', 'stu_number', 'national_code', 'field']
+        fields = ['id', 'user', 'field']
 
 
 class RepresentativeSerializer(serializers.ModelSerializer):
