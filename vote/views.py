@@ -4,26 +4,30 @@ from rest_framework import mixins, viewsets
 from .models import Representative, Vote
 from .serializers import StudentSerializer, RepresentativeSerializer, VoteCreateSerializer, VoteSerializer
 from core.models import User as Student
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
 class StudentViewSet(mixins.ListModelMixin,
                    viewsets.GenericViewSet):
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
-
+    permission_classes = [IsAdminUser]
     
-
 
 class RepresentativeViewSet(mixins.ListModelMixin,
                    viewsets.GenericViewSet):
     queryset = Representative.objects.all()
     serializer_class = RepresentativeSerializer
+    permission_classes = [IsAdminUser]
 
 
 class VoteViewSet(ModelViewSet):
-    queryset = Vote.objects.all()
     serializer_class = VoteCreateSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
+        
+    def get_queryset(self):
+        if self.request.user.is_staff:
+            return Vote.objects.all()
+        else :
+            return Vote.objects.filter(student=self.request.user)
     
     def get_serializer_class(self):
         if self.request.method == 'POST':

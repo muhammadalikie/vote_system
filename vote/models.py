@@ -1,8 +1,10 @@
 from django.db import models
 from django.conf import settings
 
+
 class Representative(models.Model):
-    student = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    student = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
 
     def __str__(self) -> str:
@@ -10,7 +12,9 @@ class Representative(models.Model):
 
 
 class Vote(models.Model):
-    student = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+    student = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     representative = models.ForeignKey(
         Representative, on_delete=models.CASCADE)
 

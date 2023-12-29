@@ -1,11 +1,9 @@
 from rest_framework import routers
-from core.models import User as Student
-from vote.serializers import StudentSerializer
 from vote.views import RepresentativeViewSet, StudentViewSet, VoteViewSet
 
 router = routers.DefaultRouter()
-router.register('students', StudentViewSet, basename='students')
+router.register('students', StudentViewSet)
 router.register('representatives', RepresentativeViewSet)
-router.register('votes', VoteViewSet)
+router.register('votes', VoteViewSet, basename='votes')
 
 urlpatterns = router.urls
