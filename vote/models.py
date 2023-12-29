@@ -1,13 +1,13 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class Student(models.Model):
-    stu_number = models.IntegerField(unique=True)
-    national_code = models.IntegerField(unique=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     field = models.CharField(max_length=255)
 
     def __str__(self) -> str:
-        return str(self.stu_number)
+        return str(self.user.username)
 
 
 class Representative(models.Model):
@@ -15,7 +15,7 @@ class Representative(models.Model):
     name = models.CharField(max_length=255)
 
     def __str__(self) -> str:
-        return str(self.student.stu_number)
+        return str(self.student.user.username)
 
 
 class Vote(models.Model):
@@ -27,5 +27,5 @@ class Vote(models.Model):
         unique_together = ['student', 'representative']
 
     def __str__(self) -> str:
-        return str(self.student.stu_number) + '->' + \
-            str(self.representative.student.stu_number)
+        return str(self.student.user.username) + '->' + \
+            str(self.representative.student.user.username)
