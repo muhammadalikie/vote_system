@@ -1,4 +1,4 @@
-from email.policy import default
+from django.db import IntegrityError
 from rest_framework import serializers
 from .models import Representative, Vote
 from core.models import User as Student
@@ -26,21 +26,30 @@ class RepresentativeSerializer(serializers.ModelSerializer):
 class VoteCreateSerializer(serializers.ModelSerializer):
     student = serializers.CharField(source='student.username', read_only=True)
     
-
     class Meta:
         model = Vote
         fields = ['id', 'student', 'representative']
 
-    def create(self, validated_data):
-        return Vote.objects.create(student=self.context['student'], **validated_data)
 
+    def create(self, validated_data):
+        try:
+            return Vote.objects.create(student=self.context['student'], **validated_data)
+        except IntegrityError:
+            error_msg = {'error': 'You cannot register the same vote'}
+            raise serializers.ValidationError(error_msg)
+            
 
 class VoteSerializer(serializers.ModelSerializer):
     name = serializers.CharField(read_only=True)
     student = serializers.CharField(source='student.username')
     representative = serializers.CharField(
         source='representative.student.username')
+    date = serializers.SerializerMethodField(method_name='formated_date')
 
     class Meta:
         model = Vote
-        fields = ['id', 'name', 'student', 'representative']
+        fields = ['id', 'name', 'student', 'representative', 'date']
+
+    def formated_date(self, vote):
+        vote = Vote.objects.get(pk=vote.pk).date
+        return f'{vote.year}-{vote.month}-{vote.day} {vote.hour}:{vote.minute}:{vote.second}'
