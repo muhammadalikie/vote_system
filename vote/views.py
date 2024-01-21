@@ -21,7 +21,6 @@ class RepresentativeViewSet(mixins.ListModelMixin,
 
 
 class VoteViewSet(ModelViewSet):
-    serializer_class = VoteCreateSerializer
     permission_classes = [IsAuthenticated]
     
     def get_queryset(self):
