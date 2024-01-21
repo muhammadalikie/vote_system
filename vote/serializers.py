@@ -13,7 +13,9 @@ class StudentSerializer(serializers.ModelSerializer):
 class RepresentativeSerializer(serializers.ModelSerializer):
     username = serializers.CharField(source='student.username')
     student_id = serializers.IntegerField(source='student.id')
-    number_of_votes = serializers.SerializerMethodField(method_name='cal_vote_number')
+    number_of_votes = serializers.SerializerMethodField(
+        method_name='cal_vote_number')
+
     class Meta:
         model = Representative
         fields = ['id', 'student_id', 'name', 'username', 'number_of_votes']
@@ -23,13 +25,13 @@ class RepresentativeSerializer(serializers.ModelSerializer):
             representative=representative
         ).count()
 
+
 class VoteCreateSerializer(serializers.ModelSerializer):
     student = serializers.CharField(source='student.username', read_only=True)
-    
+
     class Meta:
         model = Vote
-        fields = ['id', 'student', 'representative']
-
+        fields = ['id', 'name', 'student', 'representative']
 
     def create(self, validated_data):
         try:
@@ -37,7 +39,7 @@ class VoteCreateSerializer(serializers.ModelSerializer):
         except IntegrityError:
             error_msg = {'error': 'You cannot register the same vote'}
             raise serializers.ValidationError(error_msg)
-            
+
 
 class VoteSerializer(serializers.ModelSerializer):
     name = serializers.CharField(read_only=True)

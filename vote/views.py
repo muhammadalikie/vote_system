@@ -22,11 +22,12 @@ class RepresentativeViewSet(mixins.ListModelMixin,
 
 class VoteViewSet(ModelViewSet):
     serializer_class = VoteCreateSerializer
-        
+    permission_classes = [IsAuthenticated]
+    
     def get_queryset(self):
         if self.request.user.is_staff:
             return Vote.objects.all()
-        else :
+        else:
             return Vote.objects.filter(student=self.request.user)
     
     def get_serializer_class(self):
