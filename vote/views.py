@@ -1,10 +1,10 @@
 from rest_framework.viewsets import ModelViewSet
 from rest_framework import mixins, viewsets
 from .models import Representative, Vote, VoteCart
-from .serializers import StudentSerializer, RepresentativeSerializer, VoteCartSerializer, VoteCreateSerializer, VoteSerializer
+from .serializers import RepresentativeCreateSerializer, StudentSerializer, RepresentativeSerializer, VoteCartSerializer, VoteCreateSerializer, VoteSerializer
 from core.models import User as Student
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
-
+from .permissions import IsAuthenticatedForVote
 
 class StudentViewSet(mixins.ListModelMixin,
                      mixins.RetrieveModelMixin,
@@ -18,18 +18,33 @@ class StudentViewSet(mixins.ListModelMixin,
 
 class RepresentativeViewSet(ModelViewSet):
     queryset = Representative.objects.all()
-    serializer_class = RepresentativeSerializer
     permission_classes = [IsAdminUser]
+    
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return RepresentativeCreateSerializer
+        return RepresentativeSerializer
 
 
-class VoteCartViewSet(ModelViewSet):
-    queryset = VoteCart.objects.all()
+class VoteCartViewSet(mixins.ListModelMixin,
+                      mixins.RetrieveModelMixin,
+                      viewsets.GenericViewSet):
+    
     serializer_class = VoteCartSerializer
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAuthenticated]
+    
+    def get_queryset(self):
+        if self.request.user.is_staff:
+            return VoteCart.objects.all()
+        elif self.request.user.vote_code:
+            return VoteCart.objects.filter(pk=self.request.user.vote_code)
+        
+    
+            
 
 
 class VoteViewSet(ModelViewSet):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticatedForVote]
 
     def get_queryset(self):
         return Vote.objects.filter(vote_cart=self.kwargs['vote_cart_pk'])
@@ -40,4 +55,4 @@ class VoteViewSet(ModelViewSet):
         return VoteSerializer
 
     def get_serializer_context(self):
-        return {'student': self.request.user, 'vote_cart':self.kwargs['vote_cart_pk']}
+        return {'student': self.request.user, 'vote_cart': self.kwargs['vote_cart_pk']}

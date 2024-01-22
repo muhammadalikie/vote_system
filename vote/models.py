@@ -16,7 +16,7 @@ class Representative(models.Model):
     name = models.CharField(max_length=255)
     vote_cart = models.ForeignKey(VoteCart, on_delete=models.CASCADE)
     def __str__(self) -> str:
-        return str(self.student.username) + ' - ' + self.vote_cart.name
+        return str(self.student.username)
     class Meta:
         unique_together = ['student', 'vote_cart']
 
