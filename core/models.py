@@ -5,7 +5,7 @@ from django.db import models
 
 
 class User(AbstractUser):
-    field = models.CharField(max_length=255)
+    field = models.CharField(max_length=255, blank=True)
 
     def __str__(self) -> str:
         return self.username
