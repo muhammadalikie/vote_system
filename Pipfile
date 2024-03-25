@@ -9,7 +9,7 @@ djangorestframework = "*"
 djoser = "*"
 djangorestframework-simplejwt = "*"
 drf-nested-routers = "*"
-django-rest-swagger = "*"
+setuptools = "*"
 
 [dev-packages]
 
