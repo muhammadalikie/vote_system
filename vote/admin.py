@@ -17,4 +17,4 @@ class RepresentativeAdmin(admin.ModelAdmin):
 
 @admin.register(Vote)
 class VoteAdmin(admin.ModelAdmin):
-    list_display = ['id', 'vote_cart', 'student', 'representative', 'date']
+    list_display = ['id', 'student', 'representative', 'date']

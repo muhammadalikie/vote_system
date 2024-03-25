@@ -8,7 +8,7 @@ class UserAdmin(BaseUserAdmin):
     fieldsets = (
         (None, {"fields": ("username", "password")}),
         (_("Personal info"), {
-         "fields": ("first_name", "last_name", "field", "vote_code")}),
+         "fields": ("first_name", "last_name", "requirements")}),
         (
             _("Permissions"),
             {
@@ -26,6 +26,6 @@ class UserAdmin(BaseUserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('username', 'password1', 'password2', 'field', 'vote_code'),
+            'fields': ('username', 'password1', 'password2', 'requirements'),
         }),
     )
