@@ -56,9 +56,11 @@ class RepresentativeSerializer(serializers.ModelSerializer):
 
 
 class VoteCartSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = VoteCart
-        fields = ['id', 'name', 'description']
+        fields = ['id', 'name', 'description',
+                  'start_date', 'end_date', 'representative_set']
 
 
 # vote serializers:
