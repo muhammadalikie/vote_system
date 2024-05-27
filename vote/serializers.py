@@ -55,12 +55,33 @@ class RepresentativeSerializer(serializers.ModelSerializer):
 # vote cart serializers:
 
 
+class RepresentativeSimpleSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(source='student.username', read_only=True)
+
+    class Meta:
+        model = Representative
+        fields = ['id', 'username', 'name']
+
+
 class VoteCartSerializer(serializers.ModelSerializer):
+    representative_set = RepresentativeSimpleSerializer(many=True)
+    start_date = serializers.SerializerMethodField(
+        method_name='formated_start_date')
+    end_date = serializers.SerializerMethodField(
+        method_name='formated_end_date')
 
     class Meta:
         model = VoteCart
         fields = ['id', 'name', 'description',
                   'start_date', 'end_date', 'representative_set']
+
+    def formated_start_date(self, vote):
+        vote = VoteCart.objects.get(pk=vote.pk).start_date
+        return f'{vote.year}-{vote.month}-{vote.day} {vote.hour}:{vote.minute}:{vote.second}'
+
+    def formated_end_date(self, vote):
+        vote = VoteCart.objects.get(pk=vote.pk).end_date
+        return f'{vote.year}-{vote.month}-{vote.day} {vote.hour}:{vote.minute}:{vote.second}'
 
 
 # vote serializers:
