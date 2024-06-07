@@ -91,6 +91,7 @@ class VoteCreateSerializer(serializers.ModelSerializer):
         fields = ['id', 'representative']
 
     def create(self, validated_data):
+        print(validated_data)
         vote_cart = VoteCart.objects.get(pk=self.context['vote_cart'])
         student = Student.objects.get(pk=self.context['student'].pk)
         try:
@@ -101,6 +102,9 @@ class VoteCreateSerializer(serializers.ModelSerializer):
             if vote_cart.requirements != student.requirements:
                 raise serializers.ValidationError(
                     {'error': 'you haven\'t permission to vote!'})
+            if vote_cart != validated_data['representative'].vote_cart:
+                raise serializers.ValidationError(
+                    {'error': 'you cant\'t vote to others representatives!'})
 
             return Vote.objects.create(student=self.context['student'],
                                        vote_cart=vote_cart,
