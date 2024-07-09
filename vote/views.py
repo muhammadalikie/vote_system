@@ -2,9 +2,12 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework import mixins, viewsets, permissions
 from rest_framework.decorators import action
 from .models import Representative, Vote, VoteCart
-from .serializers import RepresentativeCreateSerializer, StudentCreateSerializer, StudentSerializer, RepresentativeSerializer, VoteCartSerializer, VoteCreateSerializer, VoteSerializer
+from .serializers import RepresentativeCreateSerializer, \
+    StudentCreateSerializer, StudentSerializer, RepresentativeSerializer, \
+    VoteCartSerializer, VoteCreateSerializer, VoteSerializer, VoteCartCreateSerializer
 from core.models import User as Student
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from .permissions import UserPermission
 
 
 class StudentViewSet(ModelViewSet):
@@ -28,12 +31,20 @@ class RepresentativeViewSet(ModelViewSet):
 
 
 class VoteCartViewSet(mixins.ListModelMixin,
+                      mixins.DestroyModelMixin,
+                      mixins.CreateModelMixin,
                       mixins.RetrieveModelMixin,
                       viewsets.GenericViewSet):
-    permission_classes = [IsAuthenticated]
-    serializer_class = VoteCartSerializer
+    permission_classes = [UserPermission]
+
+    def get_serializer_class(self):
+        if self.request.method == 'POST' and self.request.user.is_staff:
+            return VoteCartCreateSerializer
+        return VoteCartSerializer
 
     def get_queryset(self):
+        if self.request.user.is_staff:
+            return VoteCart.objects.all()
         return VoteCart.objects.filter(requirements=self.request.user.requirements)
 
 

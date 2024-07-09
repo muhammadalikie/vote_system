@@ -13,7 +13,7 @@ class StudentCreateSerializer(BaseUserCreateSerializer):
     class Meta(BaseUserCreateSerializer.Meta):
         model = User
         fields = ['id', 'username', 'password',
-                  'requirements']
+                  'requirements', 'is_staff']
 
 
 # for other methods:
@@ -21,7 +21,7 @@ class StudentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Student
-        fields = ['id', 'username', 'requirements']
+        fields = ['id', 'username', 'requirements', 'is_staff']
 
 
 # Representative serializers:
@@ -83,6 +83,13 @@ class VoteCartSerializer(serializers.ModelSerializer):
         vote = VoteCart.objects.get(pk=vote.pk).end_date
         return f'{vote.year}-{vote.month}-{vote.day} {vote.hour}:{vote.minute}:{vote.second}'
 
+
+class VoteCartCreateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = VoteCart
+        fields = ['id', 'name', 'description',
+                  'start_date', 'end_date', 'requirements', 'vote_count']
 
 # vote serializers:
 class VoteCreateSerializer(serializers.ModelSerializer):
