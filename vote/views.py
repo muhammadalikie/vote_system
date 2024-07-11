@@ -30,12 +30,7 @@ class RepresentativeViewSet(ModelViewSet):
         return RepresentativeSerializer
 
 
-class VoteCartViewSet(mixins.ListModelMixin,
-                      mixins.CreateModelMixin,
-                      mixins.UpdateModelMixin,
-                      mixins.DestroyModelMixin,
-                      mixins.RetrieveModelMixin,
-                      viewsets.GenericViewSet):
+class VoteCartViewSet(ModelViewSet):
     permission_classes = [UserPermission]
 
     def get_serializer_class(self):
