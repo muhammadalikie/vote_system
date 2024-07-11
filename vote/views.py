@@ -1,5 +1,4 @@
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.generics import UpdateAPIView
 from rest_framework import mixins, viewsets, permissions
 from rest_framework.decorators import action
 from .models import Representative, Vote, VoteCart
@@ -49,7 +48,12 @@ class VoteCartViewSet(mixins.ListModelMixin,
         return VoteCart.objects.filter(requirements=self.request.user.requirements)
 
 
-class VoteViewSet(ModelViewSet, UpdateAPIView):
+class VoteViewSet(mixins.CreateModelMixin,
+                  mixins.ListModelMixin,
+                  mixins.DestroyModelMixin,
+                  mixins.RetrieveModelMixin,
+                  viewsets.GenericViewSet):
+
     permission_classes = [IsAuthenticated]
     
     def get_queryset(self):
