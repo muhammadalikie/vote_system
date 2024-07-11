@@ -73,7 +73,7 @@ class VoteCartSerializer(serializers.ModelSerializer):
     class Meta:
         model = VoteCart
         fields = ['id', 'name', 'description',
-                  'start_date', 'end_date', 'representative_set']
+                  'start_date', 'end_date', 'vote_count', 'requirements', 'representative_set']
 
     def formated_start_date(self, vote):
         vote = VoteCart.objects.get(pk=vote.pk).start_date
@@ -92,6 +92,8 @@ class VoteCartCreateSerializer(serializers.ModelSerializer):
                   'start_date', 'end_date', 'requirements', 'vote_count']
 
 # vote serializers:
+
+
 class VoteCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Vote
