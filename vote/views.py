@@ -31,14 +31,15 @@ class RepresentativeViewSet(ModelViewSet):
 
 
 class VoteCartViewSet(mixins.ListModelMixin,
-                      mixins.DestroyModelMixin,
                       mixins.CreateModelMixin,
+                      mixins.UpdateModelMixin,
+                      mixins.DestroyModelMixin,
                       mixins.RetrieveModelMixin,
                       viewsets.GenericViewSet):
     permission_classes = [UserPermission]
 
     def get_serializer_class(self):
-        if self.request.method == 'POST' and self.request.user.is_staff:
+        if self.request.user.is_staff:
             return VoteCartCreateSerializer
         return VoteCartSerializer
 
@@ -57,6 +58,8 @@ class VoteViewSet(mixins.CreateModelMixin,
     permission_classes = [IsAuthenticated]
     
     def get_queryset(self):
+        if self.request.user.is_staff:
+            return Vote.objects.all()
         return Vote.objects.filter(student=self.request.user)
 
     def get_serializer_class(self):
