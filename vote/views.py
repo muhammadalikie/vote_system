@@ -50,7 +50,6 @@ class VoteCartViewSet(mixins.ListModelMixin,
 
 
 class VoteViewSet(ModelViewSet, UpdateAPIView):
-    http_method_names = ['get', 'post','head', 'options', 'patch']
     permission_classes = [IsAuthenticated]
     
     def get_queryset(self):
