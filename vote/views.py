@@ -51,11 +51,16 @@ class VoteViewSet(mixins.CreateModelMixin,
                   viewsets.GenericViewSet):
 
     permission_classes = [IsAuthenticated]
-    
+
     def get_queryset(self):
         if self.request.user.is_staff:
             return Vote.objects.all()
-        return Vote.objects.filter(student=self.request.user)
+
+        vote_cart = VoteCart.objects.get(id=self.kwargs['vote_cart_pk'])
+        
+        
+        return Vote.objects.filter(student=self.request.user,
+                                   vote_cart=vote_cart)
 
     def get_serializer_class(self):
         if self.request.method == 'POST':
