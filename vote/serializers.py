@@ -39,19 +39,20 @@ class RepresentativeSerializer(serializers.ModelSerializer):
     field = serializers.CharField(source='student.field', read_only=True)
     number_of_votes = serializers.SerializerMethodField(
         method_name='cal_vote_number')
-    vote_cart = serializers.CharField(source='vote_cart.name')
-    vote_cart_id = serializers.CharField(source='vote_cart.id')
+    vote_cart_name = serializers.CharField(
+        source='vote_cart.name', read_only=True)
 
     class Meta:
         model = Representative
         fields = ['id', 'student', 'username', 'name',
-                  'field', 'vote_cart', 'vote_cart_id', 'number_of_votes']
+                  'field', 'vote_cart', 'vote_cart_name', 'number_of_votes']
 
     def cal_vote_number(self, representative):
         count = Vote.objects.filter(
             representative=representative, representative__vote_cart=representative.vote_cart
         ).count()
         return count
+
 
 # vote cart serializers:
 
@@ -101,7 +102,7 @@ class VoteCreateSerializer(serializers.ModelSerializer):
         fields = ['id', 'representative']
 
     def create(self, validated_data):
-        
+
         vote_cart = VoteCart.objects.get(pk=self.context['vote_cart'])
         student = Student.objects.get(pk=self.context['student'].pk)
         try:
