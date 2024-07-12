@@ -40,11 +40,12 @@ class RepresentativeSerializer(serializers.ModelSerializer):
     number_of_votes = serializers.SerializerMethodField(
         method_name='cal_vote_number')
     vote_cart = serializers.CharField(source='vote_cart.name')
+    vote_cart_id = serializers.CharField(source='vote_cart.id')
 
     class Meta:
         model = Representative
         fields = ['id', 'student', 'username', 'name',
-                  'field', 'vote_cart', 'number_of_votes']
+                  'field', 'vote_cart', 'vote_cart_id', 'number_of_votes']
 
     def cal_vote_number(self, representative):
         count = Vote.objects.filter(
