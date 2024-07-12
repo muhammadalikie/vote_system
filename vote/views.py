@@ -53,12 +53,10 @@ class VoteViewSet(mixins.CreateModelMixin,
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        if self.request.user.is_staff:
-            return Vote.objects.all()
-
         vote_cart = VoteCart.objects.get(id=self.kwargs['vote_cart_pk'])
-        
-        
+        if self.request.user.is_staff:
+            return Vote.objects.filter(vote_cart=vote_cart)
+
         return Vote.objects.filter(student=self.request.user,
                                    vote_cart=vote_cart)
 
