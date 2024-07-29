@@ -1,0 +1,17 @@
+version: "3.8"
+services:
+  vote-system-client:
+    image: vote-system-client:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: vote-system-client
+    restart: always
+    ports:
+      - "127.0.0.1:5173:5173"
+    networks:
+      - main_network
+
+networks:
+  main_network:
+    name: main_network
